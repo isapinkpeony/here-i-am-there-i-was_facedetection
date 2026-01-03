@@ -45,7 +45,39 @@ function setup() {
 
   for (let i = 0; i < 150; i++) particles.push(new Particle());
 
+  // Try fullscreen on first interaction (works on both desktop and mobile)
+  document.addEventListener('click', enterFullscreen, { once: true });
+  document.addEventListener('touchstart', enterFullscreen, { once: true });
+  document.addEventListener('keydown', enterFullscreen, { once: true });
+
   setupFacePresence();
+}
+
+function enterFullscreen() {
+  if (!document.fullscreenElement) {
+    // Try multiple methods for better mobile compatibility
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen().catch(() => {});
+    } else if (elem.webkitRequestFullscreen) { // Safari
+      elem.webkitRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Firefox
+      elem.mozRequestFullScreen();
+    } else if (elem.msRequestFullscreen) { // IE/Edge
+      elem.msRequestFullscreen();
+    }
+  }
+}
+
+function keyPressed() {
+  // Press 'F' to toggle fullscreen
+  if (key === 'f' || key === 'F') {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
 }
 
 function windowResized() {
